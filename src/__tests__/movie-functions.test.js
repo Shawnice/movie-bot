@@ -6,7 +6,7 @@ require('dotenv').config();
 
 // Internal
 const movie = require('../movie-functions');
-const { DBConnection } = require('../db');
+const DBConnection= require('../db');
 
 
 const buildContext = path.resolve(__dirname);

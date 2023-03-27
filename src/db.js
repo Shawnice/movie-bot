@@ -13,15 +13,15 @@ class DBConnection {
 
     async execute(command) {
         console.debug(`Execute command ${command}`);
-        return new Promise((resolve, reject) => {
-            this.client.execute(command, function (err, reseult) {
+        return new Promise((resolve) => {
+            this.client.execute(command, function (err, result) {
                 if (err) {
-                    reject(err);
+                    throw err;
                 }
-                resolve(reseult);
+                resolve(result);
             });
         })
     }
 }
 
-module.exports = { DBConnection }
+module.exports.default = DBConnection

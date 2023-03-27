@@ -12,9 +12,9 @@ async function queryRank(ranks, conn) {
         condition = "BETWEEN " + _processRankStr(ranks[0]) + " AND " + _processRankStr(ranks[1]);
     }
     sql = `select name, year from imdb where rank_ ${condition}`
-    return new Promise(async (resolve) => {
-        result = await conn.execute(sql);
-        queryResults = []
+    return new Promise(async (resolve, reject) => {
+        const result = await conn.execute(sql);
+        let queryResults = []
         result.forEach(item => {
             queryResults.push(
                 {
@@ -35,8 +35,8 @@ async function queryYear(movie_names, conn) {
     });
     sql = `select name, year from imdb where ${conditions.join(" OR ")}`
     return new Promise(async (resolve) => {
-        result = await conn.execute(sql);
-        queryResults = []
+        const result = await conn.execute(sql);
+        let queryResults = []
         result.forEach(item => {
             queryResults.push(
                 {
@@ -56,8 +56,8 @@ async function queryActors(movie_names, conn) {
     });
     sql = `select name, actors from imdb where ${conditions.join(" OR ")}`
     return new Promise(async (resolve) => {
-        result = await conn.execute(sql);
-        queryResults = []
+        const result = await conn.execute(sql);
+        let queryResults = []
         result.forEach(item => {
             queryResults.push(
                 { name: item.name, actors: item.actors }
@@ -92,8 +92,8 @@ async function queryRating(movie_names, conn) {
     });
     sql = `select name, rating from imdb where ${conditions.join(" OR ")}`
     return new Promise(async (resolve) => {
-        result = await conn.execute(sql);
-        queryResults = []
+        const result = await conn.execute(sql);
+        let queryResults = []
         result.forEach(item => {
             queryResults.push(
                 { name: item.name, rating: item.rating }
@@ -111,8 +111,8 @@ async function queryGenre(movie_genre, conn) {
     sql = `select name, year, rating from imdb where ${conditions.join(" OR ")}`
     console.log(`sql = ${sql}`);
     return new Promise(async (resolve) => {
-        result = await conn.execute(sql);
-        queryResults = []
+        const result = await conn.execute(sql);
+        let queryResults = []
         result.forEach(item => {
             queryResults.push(
                 {
@@ -134,8 +134,8 @@ async function queryDirectorMovies(director_names, conn) {
     });
     sql = `select name, year, director from imdb where ${conditions.join(" OR ")}`
     return new Promise(async (resolve) => {
-        result = await conn.execute(sql);
-        queryResults = []
+        const result = await conn.execute(sql);
+        let queryResults = []
         result.forEach(item => {
             queryResults.push(
                 {

@@ -34,7 +34,7 @@ class WitService {
   }
 }
 
-module.exports = new WitService(
+module.exports.default = new WitService(
   process.env.WIT_API_KEY,
   new log.Logger(log.INFO)
 )

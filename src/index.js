@@ -8,8 +8,8 @@ require('dotenv').config();
 
 // Internal
 const movies = require('./movie-functions');
-const witClient = require('./wit-service');
-const { DBConnection } = require('./db');
+const WitService = require('./wit-service').default;
+const DBConnection = require('./db').default;
 
 
 const app = express();
@@ -40,38 +40,38 @@ app.get('/', function (req, res) {
 });
 
 app.post('/ask-movies', async (req, res) => {
-  let data;
   try {
-    data = await witClient.query(req.body.question);
+    let data = await WitService.query(req.body.question);
+    console.log(data);
+    let intents = data.intents || [];
+    let entities = data.entities || [];
+    let queryResults = [];
+    let renderData = {
+      text: "Sorry, I don't understand your question.",
+      intents: intents,
+      entities: entities,
+      queryResults: queryResults,
+    };
+
+    if (intents.length > 0 && entities.length > 0) {
+      renderData.text = data.text;
+      // A question should only have one intent
+      intentName = data.intents[0].name;
+      // A question may contain multiple entities for a complex question
+      let queryEntities = [];
+      data.entities.forEach(item => {
+        queryEntities.push(item.value);
+      });
+      result = await movies.mappingFunc[intentName](queryEntities, conn);
+      console.log(`query result ${JSON.stringify(result)}`);
+      renderData.queryResults = result;
+    };
+
+    res.render('index', renderData);
   } catch (e) {
     console.error(e);
+    // res.render('error_page');
   };
-  console.log(data);
-  let intents = data.intents || [];
-  let entities = data.entities || [];
-  let queryResults = [];
-  let renderData = {
-    text: "Sorry, I don't understand your question.",
-    intents: intents,
-    entities: entities,
-    queryResults: queryResults,
-  };
-
-  if (intents.length > 0 && entities.length > 0) {
-    renderData.text = data.text;
-    // A question should only have one intent
-    intentName = data.intents[0].name;
-    // A question may contain multiple entities for a complex question
-    let queryEntities = [];
-    data.entities.forEach(item => {
-      queryEntities.push(item.value);
-    });
-    result = await movies.mappingFunc[intentName](queryEntities, conn);
-    console.log(`query result ${JSON.stringify(result)}`);
-    renderData.queryResults = result;
-  };
-  
-  res.render('index', renderData);
 }
 );
 
